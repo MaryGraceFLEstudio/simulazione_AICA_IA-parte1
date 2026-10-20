@@ -1,1 +1,1833 @@
-<!doctype html><html lang="it"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>AI Literacy · Studio ed esame</title><link rel="stylesheet" href="style.css"></head><body><header><a class="brand" href="#studia">AI<span>Literacy</span><small>IL TUO PERCORSO DA FORMATRICE</small></a><nav aria-label="Navigazione principale"><a href="#studia">Studia</a><a href="#simulazione">Simulazione</a><a href="#risultati">Risultati</a></nav><button id="reset" class="quiet">Azzera dati</button></header><main id="app"></main><footer>Materiali AICA · Percorso personale di preparazione · Progressi salvati solo in questo browser.<span id="saveStatus" role="status"></span></footer><script src="data.js"></script><script src="app.js"></script></body></html>
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AI Literacy — Studio ed esame</title>
+
+<style>
+:root {
+  font-family: Arial, Helvetica, sans-serif;
+  color: #253b38;
+  background: #f6f4ee;
+  line-height: 1.65;
+  font-size: 17px;
+  --verde: #365f56;
+  --bordo: #d9dfd6;
+}
+* { box-sizing: border-box; }
+body { margin: 0; }
+header {
+  max-width: 1440px;
+  margin: auto;
+  padding: 24px 5%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  border-bottom: 1px solid var(--bordo);
+}
+a { color: #315f55; text-underline-offset: 4px; }
+nav { display: flex; gap: 28px; }
+nav a { text-decoration: none; padding: 9px 0; }
+nav a.active {
+  border-bottom: 3px solid var(--verde);
+  font-weight: 700;
+}
+.brand {
+  font-size: 26px;
+  text-decoration: none;
+  font-weight: 750;
+  letter-spacing: -1px;
+}
+.brand span { font-weight: 400; margin-left: 5px; }
+.brand small {
+  display: block;
+  font-size: 10px;
+  letter-spacing: 1.5px;
+}
+main {
+  max-width: 1250px;
+  padding: 40px 5% 70px;
+  margin: auto;
+  min-height: 75vh;
+}
+h1, h2, h3 { line-height: 1.2; letter-spacing: -.5px; }
+h1 {
+  font-size: clamp(32px, 4vw, 52px);
+  max-width: 850px;
+  margin: 12px 0 20px;
+}
+h2 { font-size: 28px; }
+h3 { font-size: 21px; }
+.eyebrow {
+  font-size: 12px;
+  letter-spacing: 2px;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: #587268;
+}
+.lead { font-size: 20px; max-width: 760px; color: #53625b; }
+.hero { padding: 15px 0 28px; }
+.stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+  margin: 24px 0;
+}
+.stat {
+  background: #e8eee6;
+  border: 1px solid #dce4d8;
+  padding: 16px 24px;
+  border-radius: 12px;
+}
+.stat strong { font-size: 26px; display: block; }
+.toolbar {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin: 24px 0;
+}
+input, select, button { font: inherit; }
+input[type="search"], select {
+  padding: 12px 15px;
+  border: 1px solid #a6b4aa;
+  border-radius: 8px;
+  background: white;
+  color: inherit;
+}
+input[type="search"] { flex: 1; min-width: 200px; }
+button, .button {
+  display: inline-block;
+  background: var(--verde);
+  color: white;
+  border: 1px solid var(--verde);
+  border-radius: 8px;
+  padding: 11px 20px;
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: none;
+}
+button:hover, .button:hover { filter: brightness(.95); }
+button:disabled { opacity: .48; cursor: default; }
+.quiet {
+  background: transparent;
+  color: var(--verde);
+  border: 1px solid #a6b4aa;
+}
+.grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 18px;
+}
+.card {
+  padding: 24px;
+  background: #fffefa;
+  border: 1px solid var(--bordo);
+  border-radius: 13px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+.card p { color: #52625b; }
+.card h3 { margin: 12px 0; }
+.card a { margin-top: auto; }
+.tag {
+  font-size: 12px;
+  font-weight: 700;
+  background: #e9eee7;
+  padding: 4px 10px;
+  border-radius: 20px;
+}
+.source { font-size: 14px; color: #576b61; }
+.sheet, .quiz { max-width: 850px; }
+.quiz { margin: auto; }
+.panel {
+  background: #fffefa;
+  border: 1px solid var(--bordo);
+  padding: 28px;
+  border-radius: 12px;
+  margin: 20px 0;
+}
+.panel p { margin-top: 10px; }
+.model {
+  border-left: 4px solid #7a9583;
+  background: #eaf0e7;
+}
+.warning {
+  background: #f1e9d9;
+  border: 1px solid #d6c6a3;
+  padding: 18px;
+  border-radius: 10px;
+  margin: 22px 0;
+}
+.actions {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin: 24px 0;
+}
+label.option {
+  display: flex;
+  gap: 15px;
+  padding: 19px;
+  border: 1px solid #bdc8be;
+  border-radius: 10px;
+  margin: 12px 0;
+  cursor: pointer;
+  align-items: baseline;
+  background: #fffefa;
+}
+label.option:has(input:checked) {
+  border: 2px solid var(--verde);
+  padding: 18px;
+  background: #eaf0e7;
+}
+.option input { accent-color: var(--verde); }
+.feedback { border: 2px solid #789483; }
+.feedback.wrong { border-color: #a17a5c; }
+.feedback h3 { margin-top: 0; }
+.feedback li { margin: 15px 0; }
+progress { width: 100%; height: 12px; accent-color: var(--verde); }
+.quiz h2 { font-size: 28px; margin: 25px 0; }
+.row {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  align-items: center;
+}
+table { width: 100%; border-collapse: collapse; background: #fffefa; }
+th, td {
+  text-align: left;
+  vertical-align: top;
+  border-bottom: 1px solid var(--bordo);
+  padding: 14px;
+  overflow-wrap: anywhere;
+}
+details { margin: 20px 0; }
+summary { cursor: pointer; font-weight: 650; }
+iframe { width: 100%; height: 72vh; border: 1px solid var(--bordo); }
+footer {
+  padding: 25px 5%;
+  font-size: 13px;
+  border-top: 1px solid var(--bordo);
+  color: #607266;
+}
+footer span { display: block; }
+:focus-visible { outline: 3px solid #996a30; outline-offset: 4px; }
+ul { padding-left: 24px; }
+.muted { color: #5c6f63; }
+@media (max-width: 900px) {
+  .grid { grid-template-columns: repeat(2, 1fr); }
+  header { flex-wrap: wrap; }
+  .brand { flex: 1; }
+  nav { order: 3; width: 100%; justify-content: center; }
+  main { padding-top: 24px; }
+}
+@media (max-width: 580px) {
+  .grid { grid-template-columns: 1fr; }
+  header { gap: 14px; padding: 18px 5%; }
+  nav { gap: 25px; }
+  h1 { font-size: 34px; }
+  .panel { padding: 20px; }
+  .stat { padding: 12px 16px; flex: 1; }
+  .row { align-items: flex-start; flex-wrap: wrap; }
+  table { font-size: 14px; }
+  th, td { padding: 9px; }
+  .quiet { padding: 8px 12px; }
+  .quiz h2 { font-size: 24px; }
+}
+</style>
+</head>
+
+<body>
+<header>
+  <a class="brand" href="#studia">
+    AI<span>Literacy</span>
+    <small>IL TUO PERCORSO DA FORMATRICE</small>
+  </a>
+  <nav aria-label="Navigazione principale">
+    <a href="#studia">Studia</a>
+    <a href="#simulazione">Simulazione</a>
+    <a href="#risultati">Risultati</a>
+  </nav>
+  <button id="reset" class="quiet">Azzera dati</button>
+</header>
+
+<main id="app"></main>
+
+<footer>
+  Percorso personale di preparazione basato sulle tre fonti AICA.
+  Progressi salvati solo in questo browser.
+  <span id="saveStatus" role="status"></span>
+</footer>
+
+<script>
+"use strict";
+
+/* =========================================================
+   DATI DEL PERCORSO
+   Le pagine sono le posizioni nel PDF, non i numeri stampati
+   sulle slide. Gli esempi sono rielaborazioni didattiche.
+   ========================================================= */
+
+const DATA = {
+  cards: [],
+  questions: [],
+  notes: [],
+  sources: [
+    {file: 1, name: "1_AI_Literacy.pdf", pages: 88},
+    {file: 2, name: "2_AI_Literacy.pdf", pages: 50},
+    {file: 3, name: "3_AI_Literacy.pdf", pages: 62}
+  ]
+};
+
+function C(file, pages, title, explain, terms, example, diff, error, model) {
+  DATA.cards.push({
+    id: "c" + (DATA.cards.length + 1),
+    file, pages, title, explain, terms, example, diff, error, model
+  });
+}
+
+/* Fonte 1: fondamenti */
+
+C(1, [10,11,15,16,17,83],
+"AI Literacy e ruolo della formatrice",
+`L’alfabetizzazione all’IA comprende conoscenze e capacità per riconoscere i sistemi, usarli consapevolmente e valutarne risultati e implicazioni. Il corso insiste sulla responsabilità: saper produrre un output è insufficiente se non si sa quando verificarlo, correggerlo o fermare il sistema. La formazione va rapportata al ruolo e al contesto di impiego; nella didattica deve promuovere pensiero critico, trasparenza e protezione dei dati.`,
+`AI Literacy: alfabetizzazione critica sull’IA. Accountability: responsabilità delle scelte e dei loro effetti.`,
+`Una docente usa una bozza generata per costruire un esercizio e chiede agli studenti di verificarne le affermazioni sulle fonti.`,
+`La competenza operativa riguarda l’uso dello strumento; l’AI Literacy include valutazione, limiti e responsabilità.`,
+`Scambiare un corso di soli comandi e funzioni per una preparazione completa; ritenere una risposta fluida automaticamente affidabile.`,
+`Spiegherei l’AI Literacy come la capacità di comprendere, utilizzare e valutare criticamente l’IA. Una formatrice insegna anche a riconoscere rischi e a decidere quando interrompere o correggere l’uso.`
+);
+
+C(1, [26,27],
+"Capacità e stadi dell’IA",
+`La fonte individua percezione, ragionamento o presa di decisione, apprendimento e azione. Descrive tre stadi: IA ristretta, specializzata in compiti specifici; IA generale, obiettivo di capacità trasferibili a problemi diversi; superintelligenza, scenario ipotetico di capacità superiori a quelle umane. Sono classificazioni di ampiezza delle capacità, da tenere distinte dal livello di automazione di un singolo prodotto.`,
+`ANI: Artificial Narrow Intelligence. AGI: Artificial General Intelligence. ASI: Artificial Superintelligence.`,
+`Un sistema che riconosce immagini può essere molto efficace nel suo compito senza possedere una competenza generale.`,
+`Percezione acquisisce informazioni; apprendimento ricava regolarità dai dati; azione interviene sull’ambiente.`,
+`Dedurre una intelligenza generale da una prestazione eccellente in un singolo dominio.`,
+`Distinguerei specializzazione, generalità e superamento delle capacità umane. Le quattro capacità descrivono funzioni del sistema; i tre stadi descrivono l’ampiezza delle sue competenze.`
+);
+
+C(1, [20,22,32,33,34],
+"Dati, algoritmi e modelli",
+`Il dato è ciò che viene osservato e rappresentato; l’algoritmo è una procedura finita di istruzioni; il modello è il risultato dell’apprendimento, usato per produrre previsioni o decisioni su nuovi dati. La qualità dell’output dipende dall’interazione fra questi elementi. Datificare significa trasformare osservazioni in dati; digitalizzare, nella terminologia delle slide, significa ristrutturare processi con il supporto del digitale.`,
+`Dato: rappresentazione di osservazioni. Algoritmo: sequenza finita di operazioni. Modello: rappresentazione appresa di regolarità nei dati. IoT: oggetti connessi che inviano e ricevono dati.`,
+`I sensori raccolgono temperature; una procedura di addestramento usa le misurazioni; il modello ottenuto produce una previsione.`,
+`La raccolta dei dati non coincide con il modello; la procedura che apprende non coincide con il risultato appreso.`,
+`Usare dato, algoritmo e modello come sinonimi; confondere la semplice raccolta di misure con la riorganizzazione di un processo.`,
+`Presenterei i dati come materiale di partenza, gli algoritmi come procedure e il modello come risultato utilizzabile su nuovi input. Datificazione e digitalizzazione riguardano rispettivamente rappresentazione e processi.`
+);
+
+C(1, [49,50,54],
+"Machine Learning e approcci di apprendimento",
+`Il Machine Learning è un sottoinsieme dell’IA che permette di apprendere regolarità dai dati. Nel supervisionato gli esempi includono etichette o risultati attesi; nel non supervisionato si cercano strutture senza etichette; nel rinforzo si apprendono azioni attraverso ricompense e penalità. Il diagramma generale di pagina 49 usa input e output desiderati: va letto insieme alle pagine 50 e 54, che distinguono i diversi approcci.`,
+`Etichetta: risultato associato a un esempio. Apprendimento supervisionato: apprendimento da esempi etichettati. Non supervisionato: ricerca di strutture senza etichette. Rinforzo: apprendimento guidato da ricompense.`,
+`Classificare messaggi già marcati come spam usa esempi etichettati; raggruppare messaggi senza categorie preassegnate esemplifica il non supervisionato.`,
+`Un’etichetta descrive il risultato atteso per un esempio; una ricompensa valuta un’azione nell’interazione con un ambiente.`,
+`Dire che ogni addestramento richiede sempre coppie input-output; chiamare rinforzo qualsiasi generico feedback.`,
+`Distinguerei i tre metodi in base al segnale disponibile: etichette, strutture nei dati oppure ricompense. La scelta dipende dal compito e dai dati, non dalla sola quantità di esempi.`
+);
+
+C(1, [45,55,56,57,58,59],
+"Reti neurali, Deep Learning e opacità",
+`Una rete neurale artificiale comprende nodi organizzati in strati: gli input vengono trasformati e trasmessi verso gli output. I pesi sono parametri che regolano tali trasformazioni. Il Deep Learning utilizza reti con molti strati per apprendere rappresentazioni complesse e gerarchiche. La ricchezza delle trasformazioni rende difficile spiegare il percorso che porta a un singolo risultato: la fonte usa la metafora della scatola nera.`,
+`Neurone artificiale: nodo di elaborazione. Layer: strato di nodi. Peso: parametro della rete. Black box: sistema il cui funzionamento interno è difficile da interpretare.`,
+`Nella classificazione di immagini di animali, diversi strati elaborano caratteristiche differenti e le combinano verso il risultato.`,
+`Il Deep Learning appartiene al Machine Learning; non ogni metodo di Machine Learning è una rete profonda. Opacità e accuratezza sono dimensioni differenti.`,
+`Ritenere che una rete sia un cervello biologico o che un risultato accurato sia per questo facilmente spiegabile.`,
+`Descriverei una rete come strati di nodi collegati da pesi. La profondità permette rappresentazioni complesse ma può rendere ardua la spiegazione del singolo output, da cui la necessità di controllo.`
+);
+
+C(1, [37,39,46,47,48],
+"LLM, token e finestra di contesto",
+`Un Large Language Model è un modello linguistico di grandi dimensioni che genera sequenze sulla base di regolarità apprese. Il testo viene suddiviso in token: parole, parti di parole o caratteri, associati a identificativi numerici. Anche il prompt viene tokenizzato. Il contesto è la quantità di informazione disponibile insieme durante l’elaborazione; i parametri sono invece i valori interni appresi nell’addestramento. Un training set ampio non garantisce verità.`,
+`LLM: Large Language Model. Token: unità di testo elaborata dal modello. Contesto: informazione disponibile nella richiesta e nella conversazione entro i limiti del modello. Parametri: valori appresi.`,
+`In una conversazione molto lunga può essere necessario riproporre informazioni essenziali per mantenerle disponibili nel contesto.`,
+`Il contesto contiene informazioni fornite durante l’uso; i parametri derivano dall’addestramento. Un token non corrisponde necessariamente a una parola.`,
+`Confondere finestra di contesto e memoria illimitata; dedurre la correttezza dal numero di parametri.`,
+`Un LLM lavora su token e genera testo probabilisticamente. Distinguerei il contesto disponibile durante l’uso dai parametri appresi e ricorderei che nessuna delle due grandezze garantisce la verità.`
+);
+
+C(1, [40,41,43,44,45,67],
+"Foundation model e sviluppo storico",
+`Il foundation model è un modello addestrato su grandi quantità di dati diversificati e adattabile a numerosi compiti. La pagina 67 evidenzia scala, auto-supervisione e generalizzazione. Le cronologie collocano Turing nel 1950, la nascita della disciplina negli anni Cinquanta, cicli di progresso e rallentamento, i Transformer nel 2017 e la diffusione di ChatGPT nel novembre 2022. Queste tappe spiegano una crescita cumulativa, non un’invenzione improvvisa nel 2022.`,
+`Foundation model: modello di base adattabile a compiti diversi. Auto-supervisione: apprendimento con segnali ricavati dai dati stessi. Generalizzazione: applicazione delle regolarità apprese a nuovi casi.`,
+`Un modello di base può essere adattato per riassunti, traduzione o assistenza conversazionale.`,
+`Il modello è il motore; un’interfaccia conversazionale è un prodotto con cui lo si utilizza. Le slide usano talvolta ChatGPT per entrambi: qui manteniamo la distinzione esplicita di pagina 45.`,
+`Pensare che tutta l’IA sia nata con ChatGPT; considerare un foundation model destinato per definizione a un solo compito.`,
+`Collegherei la storia dell’IA alla disponibilità di dati, algoritmi e calcolo. Un foundation model fornisce una base riutilizzabile; il prodotto conversazionale ne rende accessibili alcune capacità.`
+);
+
+C(1, [62,68,69,70],
+"IA generativa, NLP e multimodalità",
+`L’IA generativa crea contenuti come testo, immagini, audio, video e codice a partire da input. Il confronto nelle slide separa lo scopo analitico, classificare e prevedere, dallo scopo generativo, produrre contenuti. NLP indica le tecniche per elaborare il linguaggio umano; un LLM è un tipo di modello linguistico; la multimodalità combina modalità diverse. Generare un testo su un documento e recuperare il documento originale sono operazioni diverse.`,
+`Prompt: istruzione o input fornito al sistema. NLP: Natural Language Processing. Multimodalità: elaborazione o combinazione di modalità quali testo, immagini, audio e video.`,
+`Descrivere a parole una fotografia combina una modalità visiva e una testuale; scrivere una poesia è un compito generativo.`,
+`Classificare una foto come gatto/non gatto produce una categoria; generare l’immagine di un gatto produce un nuovo contenuto.`,
+`Equiparare generazione e ricerca verificata; ritenere che multimodale significhi semplicemente una risposta più lunga.`,
+`L’IA generativa produce contenuti sulla base di regolarità apprese. Distinguerei NLP come campo, LLM come modello e multimodalità come combinazione di forme dell’informazione, verificando sempre la fedeltà dell’output.`
+);
+
+C(1, [24,61,62,64,65,66],
+"Probabilità, correlazione ed euristiche",
+`Il corso contrappone procedure con istruzioni determinate e sistemi che producono risultati probabilistici. Una correlazione segnala un’associazione e non basta a dimostrare un rapporto causale. L’euristica è una strategia che riduce la complessità attraverso scorciatoie, senza assicurare una soluzione corretta. Per studiare un testo occorre distinguere il recupero di una fonte dalla sua elaborazione generativa e controllare i passaggi sensibili.`,
+`Correlazione: associazione fra fenomeni. Causalità: relazione di causa ed effetto. Euristica: procedimento semplificato per affrontare un problema.`,
+`Un modello associa due caratteristiche nei dati storici: l’associazione può aiutare una previsione ma non spiega automaticamente perché il fenomeno avvenga.`,
+`Una previsione riguarda ciò che può accadere; una spiegazione causale riguarda perché accade. Una scorciatoia utile non è una dimostrazione.`,
+`Presentare un’associazione statistica come prova causale; credere che una risposta sicura nel tono abbia una garanzia di esattezza.`,
+`Spiegherei che le correlazioni consentono associazioni e previsioni ma non dimostrano da sole una causa. Le euristiche aiutano nella complessità, mentre la responsabilità della verifica rimane umana.`
+);
+
+C(1, [71,73,74,75,76,77,78,79,80,81,84,85],
+"Agenti e IA agentica",
+`Un agente percepisce l’ambiente, prende decisioni e compie azioni verso un obiettivo. Può utilizzare strumenti e interagire con altri sistemi. La presentazione descrive l’IA agentica soprattutto come coordinamento di agenti: scomposizione degli obiettivi, assegnazione di ruoli, pianificazione e adattamento di workflow. Questo passaggio cambia l’organizzazione del lavoro: si definiscono risultati attesi e controlli, oltre a formulare singole domande.`,
+`Agente: sistema che agisce verso un obiettivo. Workflow: sequenza di attività. Orchestratore: componente che coordina ruoli e attività. Goal decomposition: divisione dell’obiettivo in sotto-compiti.`,
+`Un agente segnala email importanti; un sistema coordinato organizza un viaggio e ripianifica trasporti e appuntamenti in base al meteo.`,
+`Un chatbot può produrre una risposta; un agente può eseguire azioni tramite strumenti. La distinzione agente/agentico segue la convenzione adottata nelle slide, non una tassonomia universale.`,
+`Chiamare agente qualunque testo generato; confondere autonomia operativa con assenza di responsabilità umana.`,
+`Un agente collega percezione, decisione e azione. Nel percorso l’IA agentica amplia il quadro al coordinamento di più compiti e agenti; servono obiettivi chiari e supervisione delle azioni.`
+);
+
+/* Fonte 2: applicazioni */
+
+C(2, [2,3,4],
+"Dati strutturati e non strutturati",
+`I dati strutturati seguono uno schema predefinito, come righe e colonne di un database. I non strutturati, come testo libero, immagini e audio, non si organizzano direttamente secondo quel formato. La fonte confronta l’impiego del Machine Learning su tabelle con la capacità del Deep Learning di estrarre caratteristiche da dati complessi. Si tratta di una distinzione didattica di impiego, non di due insiemi incompatibili: il Deep Learning è parte del Machine Learning.`,
+`Schema: organizzazione predefinita dei dati. Dato non strutturato: contenuto privo di uno schema tabellare immediato. Feature: caratteristica usata nell’elaborazione.`,
+`Una tabella di importi mensili è strutturata; la registrazione audio di una riunione è non strutturata.`,
+`La struttura riguarda il formato dei dati; la profondità riguarda l’architettura del modello.`,
+`Ritenere che non strutturato significhi privo di informazione o inutilizzabile; trasformare una preferenza applicativa in una regola esclusiva.`,
+`Distinguerei lo schema tabellare dai contenuti come immagini e audio. Le reti profonde possono apprendere caratteristiche dai dati complessi, ma questo non rende ML e DL categorie separate.`
+);
+
+C(2, [5],
+"Allineamento del sistema",
+`Allineare un sistema significa cercare coerenza fra il suo comportamento e obiettivi, valori e intenzioni umane. La fonte distingue obiettivi espliciti, principi etici e normativi, adeguatezza al contesto e mantenimento della coerenza nel tempo. Un sistema tecnicamente capace può produrre risultati inappropriati per una specifica organizzazione: le prestazioni vanno quindi valutate insieme alla finalità e alle conseguenze.`,
+`Allineamento: coerenza del comportamento con obiettivi e valori umani. Contesto: condizioni e finalità dell’impiego.`,
+`Un assistente amministrativo deve fornire risposte utili ma anche rispettare le policy dell’ente e proteggere le informazioni.`,
+`L’accuratezza riguarda la correttezza del risultato; l’allineamento riguarda anche ciò che il sistema persegue e il modo in cui lo fa.`,
+`Credere che un modello molto avanzato sia automaticamente appropriato per qualunque organizzazione.`,
+`L’allineamento richiede di verificare obiettivi, valori e contesto. Non basta ottenere risposte efficaci se il comportamento produce rischi o contraddice le intenzioni dell’organizzazione.`
+);
+
+C(2, [7,9],
+"Fine-tuning",
+`Il fine-tuning adatta un modello già addestrato attraverso nuovi esempi specifici. Il corso lo paragona a una specializzazione: si orientano stile, linguaggio e comportamento su un ambito. Il punto didattico è il cambiamento interno del modello, distinto dalla consultazione occasionale di un documento. La metafora del medico serve a spiegare l’adattamento; non conferisce competenze professionali o garanzie cliniche.`,
+`Fine-tuning: ulteriore addestramento di un modello su esempi mirati. Adattamento: modifica del comportamento rispetto al modello di partenza.`,
+`Un modello generale viene ulteriormente addestrato su esempi di scrittura amministrativa per adottarne lo stile.`,
+`Il fine-tuning interviene tramite addestramento; inserire un documento nel prompt fornisce informazioni per quella elaborazione.`,
+`Chiamare fine-tuning qualsiasi caricamento di un file; leggere “permanente” nella slide come impossibilità di un successivo aggiornamento.`,
+`Descriverei il fine-tuning come una specializzazione tramite esempi che modifica il modello. Lo distinguerei dalla semplice consultazione di fonti durante la risposta.`
+);
+
+C(2, [6,8,9],
+"RAG e consultazione delle fonti",
+`La Retrieval-Augmented Generation combina recupero di contenuti e generazione. Prima si cercano passaggi pertinenti in documenti o raccolte selezionate, poi si usa quanto recuperato per costruire la risposta. Nel confronto del corso, il RAG consente consultazione di informazioni aggiornate senza riaddestrare il modello. La disponibilità delle fonti rende possibile un controllo: occorre controllare che il testo prodotto sia davvero sostenuto dai passaggi recuperati.`,
+`Retrieval: recupero di informazioni pertinenti. RAG: generazione arricchita da contenuti recuperati.`,
+`Alla domanda su un regolamento interno, il sistema recupera gli articoli pertinenti e li usa per formulare una risposta.`,
+`Il fine-tuning adatta il modello attraverso esempi; il RAG porta documenti nel processo di risposta.`,
+`Credere che il RAG equivalga a riaddestramento o che la presenza di documenti garantisca automaticamente assenza di errori. La frase “usa solo quei contenuti” descrive l’obiettivo della slide.`,
+`Il RAG recupera fonti pertinenti prima della generazione. Mantiene distinta la conoscenza interna del modello dalle informazioni consultate e permette di verificare il fondamento documentale della risposta.`
+);
+
+C(2, [17,18,19,20,21,27],
+"IA nella vita quotidiana",
+`Le applicazioni quotidiane comprendono case intelligenti, assistenti vocali, filtri antispam, raccomandazioni e navigazione adattata al traffico. La smart home può includere anche automazioni senza IA: la connessione o il controllo remoto non dimostrano da soli apprendimento. Per riconoscere il ruolo dell’IA conviene descrivere input, elaborazione e risultato, anziché usare soltanto il nome commerciale del prodotto.`,
+`Smart home: gestione automatica, autonoma o remota di dispositivi domestici. Raccomandazione: suggerimento basato su preferenze e comportamenti. Riconoscimento vocale: elaborazione della voce.`,
+`Una piattaforma suggerisce film analizzando preferenze; un navigatore adatta le indicazioni al traffico; un filtro classifica messaggi come spam.`,
+`Una raccomandazione propone un contenuto; un filtro assegna una categoria. Un comando remoto può essere semplice automazione.`,
+`Supporre che qualsiasi oggetto connesso utilizzi necessariamente IA o che un suggerimento simile a quello umano abbia lo stesso processo interno.`,
+`Identificherei il compito: personalizzare, classificare o adattare. Spiegherei quali dati vengono usati e ricorderei che IoT e automazione domestica non coincidono sempre con apprendimento automatico.`
+);
+
+C(2, [22,23,24,25,26],
+"Visione artificiale, OCR e biometria",
+`Un archivio fotografico può combinare riconoscimento di volti, oggetti e testo con data e localizzazione. Il riconoscimento facciale usa caratteristiche e proporzioni per identificare persone; l’OCR estrae testo da immagini. La biometria può rendere comodo un accesso ma introduce domande sulla conservazione, il furto e il riutilizzo dei dati. Valutare la funzione insieme ai dati trattati è parte dell’alfabetizzazione.`,
+`OCR: Optical Character Recognition, riconoscimento di testo nelle immagini. Biometria: uso di caratteristiche personali per riconoscimento o autenticazione.`,
+`Cercare una foto per persona usa il riconoscimento del volto; cercare la scritta presente su un cartello può usare OCR.`,
+`Rilevare un volto non equivale sempre a identificarne il nome; riconoscere testo non equivale a riconoscere una persona.`,
+`Chiamare OCR ogni analisi di immagini; valutare un accesso biometrico solo per la comodità, ignorando la gestione dei dati.`,
+`La visione artificiale svolge compiti diversi. Distinguerei riconoscimento di oggetti, volti e testo, e collegherei la biometria alle responsabilità sulla conservazione e sul riutilizzo delle informazioni.`
+);
+
+C(2, [11,29,31,32,33,34,36,47],
+"Servizi pubblici, istruzione e lavoro",
+`Il syllabus include apprendimento adattivo, chatbot didattici, accessibilità, creazione di appunti, automazione e ricerca. Le applicazioni nei servizi pubblici comprendono classificazione e smistamento di comunicazioni; la presentazione cita il progetto INPS sulle PEC. La sentiment analysis è richiamata nel monitoraggio di contenuti informativi. Gli schemi citano anche manutenzione predittiva delle infrastrutture, ottimizzazione di reti e orari di trasporto, chatbot per servizi e analisi dei rischi per la sicurezza. Nel lavoro compaiono supporto alle strategie, produttività e sicurezza informatica. In istruzione si aggiungono controllo linguistico e gestione scolastica: ogni funzione richiede criteri di valutazione adeguati, senza delegare la responsabilità educativa.`,
+`Apprendimento adattivo: personalizzazione del percorso didattico. Classificazione: assegnazione di categorie. Sentiment analysis: analisi dell’orientamento espresso in contenuti testuali.`,
+`Smistare una PEC verso l’ufficio pertinente è classificazione; proporre esercizi in base alle difficoltà dello studente è personalizzazione.`,
+`Creare una bozza di appunti è generazione; smistare comunicazioni è classificazione. Entrambi possono aiutare il lavoro, con criteri di controllo differenti.`,
+`Confondere una previsione o classificazione con una decisione sempre corretta; attribuire coscienza ai verbi usati per descrivere l’IA.`,
+`Partirei dal problema organizzativo: assegnare messaggi, adattare esercizi o creare appunti. Espliciterei funzione, beneficio e controllo umano, senza attribuire intenzioni al sistema.`
+);
+
+C(2, [39,40,42,43,44,45],
+"Sanità: supporto clinico e organizzativo",
+`Le fonti descrivono impieghi su immagini diagnostiche, dati clinici e genomici, ricerca farmacologica, telemonitoraggio e gestione amministrativa. Nell’oncologia di precisione si integrano caratteristiche del paziente e del tumore per supportare raccomandazioni personalizzate. Sul piano organizzativo, chatbot e strumenti di documentazione possono ridurre attività ripetitive. I dati percentuali delle slide sono esempi riportati, non garanzie trasferibili a ogni contesto.`,
+`Omiche: analisi di insiemi di informazioni biologiche, come genomica e proteomica. Imaging: diagnostica per immagini. Telemonitoraggio: osservazione a distanza di parametri.`,
+`Integrare dati genomici, clinici e immagini per suggerire un percorso personalizzato illustra il supporto alla medicina di precisione.`,
+`Una raccomandazione clinica e l’automazione della fatturazione rispondono a obiettivi diversi. La raccomandazione resta un supporto, come chiarisce anche la fonte 1, pagina 16.`,
+`Trattare una percentuale riportata come prestazione universale o considerare il modello sostitutivo del giudizio professionale.`,
+`Distinguerei applicazioni cliniche e organizzative, spiegando come l’integrazione dei dati possa aiutare la personalizzazione. Presenterei i benefici come dipendenti dal contesto e sottoposti a valutazione umana.`
+);
+
+C(2, [41],
+"Digital twin e simulazione",
+`Un gemello digitale è una replica digitale di un oggetto, sistema o processo fisico, aggiornata attraverso sensori. Serve a monitorare prestazioni, prevedere problemi e simulare modifiche senza intervenire direttamente sul sistema reale. Il collegamento con i dati del sistema fisico è il tratto da spiegare: non si tratta semplicemente di un’illustrazione o di un’immagine generata.`,
+`Digital twin: gemello digitale. Sensore: dispositivo che rileva informazioni sul sistema fisico. Simulazione: esplorazione di possibili comportamenti o modifiche.`,
+`Un gemello digitale di un impianto può ricevere misure di funzionamento e consentire di esplorare l’effetto di una modifica prima di realizzarla.`,
+`Un disegno statico rappresenta una forma; il gemello digitale descritto si aggiorna con i dati del sistema reale.`,
+`Chiamare digital twin qualsiasi grafico o immagine; dimenticare il collegamento continuo ai dati.`,
+`Spiegherei il gemello digitale come una replica collegata al sistema reale tramite sensori, utile a monitorare, prevedere problemi e simulare interventi prima di agire fisicamente.`
+);
+
+C(2, [11,23,37,38,46,47,48],
+"Creatività, ricerca e analisi delle immagini",
+`La fonte cita musica, arte, video, narrazione e giochi tra le applicazioni creative. Distingue anche interventi sulle immagini: combinare scatti per migliorare una fotografia e analizzare pennellate o colori per studiare un’attribuzione artistica. Il caso della Madonna della Rosa impiega ResNet50 insieme a Support Vector Machine. Una stessa area può comprendere generazione, trasformazione e analisi. Scienza e ambiente includono modellazione di sistemi complessi, previsione meteorologica e monitoraggio della fauna tramite immagini e suoni. In ingegneria, le slide citano la progettazione di edifici sostenibili per efficienza energetica e minore impatto ambientale.`,
+`ResNet50: rete neurale citata nell’analisi del dipinto. Support Vector Machine: metodo di Machine Learning utilizzato nel caso insieme alla rete. Trasformazione: modifica di un contenuto esistente.`,
+`Creare un’immagine nello stile di un pittore genera o trasforma contenuti; cercare indizi sull’autore di un dipinto è analisi.`,
+`La creazione di un nuovo contenuto non coincide con l’attribuzione di un’opera esistente. La tecnologia può supportare entrambe.`,
+`Pensare che ogni utilizzo dell’IA nell’arte sia generazione; estendere la precisione dichiarata nel caso a ogni opera e condizione.`,
+`Distinguerei creare, migliorare e analizzare. Il caso del dipinto mostra un uso analitico, che combina metodi e fornisce elementi da interpretare, non una produzione di nuova arte.`
+);
+
+/* Fonte 3: rischi e responsabilità */
+
+C(3, [2,3,5,11,38],
+"Privacy e ciclo dei dati",
+`Il syllabus distingue input attivo, come moduli e comandi vocali, e raccolta passiva, come navigazione e posizione. I dati possono servire a personalizzazione, pubblicità o addestramento. I rischi comprendono scarsa chiarezza sugli usi, profilazione, condivisione con terzi, rivelazioni accidentali e reidentificazione. Le buone pratiche includono evitare dati identificabili o riservati, controllare le impostazioni e rispettare policy organizzative.`,
+`Profilazione: uso di dati per descrivere caratteristiche o comportamenti. Reidentificazione: collegamento di dati apparentemente anonimi a una persona. Input attivo: dato fornito volontariamente al sistema.`,
+`Incollare una relazione con nomi di studenti in un servizio esterno può esporre informazioni personali: prima si applicano le policy e si eliminano i dettagli non necessari.`,
+`La raccolta attiva è esplicita nell’interazione; il tracciamento passivo avviene osservando comportamenti. Privacy e sicurezza si sovrappongono ma non coincidono.`,
+`Credere che il solo invio volontario renda appropriato qualsiasi uso successivo; considerare automaticamente anonimo un testo privo di nomi.`,
+`Analizzerei quali dati entrano, come vengono conservati e per quali finalità. Limiterei le informazioni condivise e verificherei impostazioni, policy e possibili riutilizzi.`
+);
+
+C(3, [2,4,6,7,8,9,10,11],
+"Sicurezza e ingegneria sociale",
+`L’ingegneria sociale sfrutta fiducia, paura, curiosità o urgenza per indurre a rivelare informazioni o compiere azioni rischiose. L’IA può aumentarne scala, personalizzazione e credibilità, anche tramite voce e volto sintetici. Il corso cita phishing, vishing, baiting, pretexting e tailgating. Le difese di base comprendono attenzione ai contenuti sospetti, password forti, autenticazione a due fattori e reti sicure.`,
+`Phishing: messaggi che fingono una fonte affidabile. Vishing: frode telefonica. Baiting: uso di un’esca. Pretexting: falsa identità o storia. Tailgating: accesso fisico seguendo una persona autorizzata.`,
+`Una telefonata che imita un dirigente e chiede credenziali urgenti combina vishing e un possibile deepfake vocale.`,
+`L’ingegneria sociale colpisce il comportamento umano; non richiede necessariamente una vulnerabilità tecnica del software.`,
+`Considerare un messaggio sicuro perché grammaticalmente corretto; fidarsi di una voce familiare come prova sufficiente dell’identità.`,
+`Definirei l’ingegneria sociale come manipolazione del comportamento. L’IA rende gli inganni più credibili; riconoscere urgenza e richieste anomale resta essenziale insieme alle misure tecniche.`
+);
+
+C(3, [2,9,21,22,23],
+"Deepfake e valutazione critica",
+`I deepfake possono imitare voce e volto e creare prove audiovisive false. La valutazione critica dei contenuti richiede di controllare fatti, fonte, scopo, caratteristiche e contesto. Anche un link proposto dall’IA può essere inventato: una citazione plausibile non è prova che il documento esista o sostenga l’affermazione. Per insegnare questi temi serve distinguere persuasività, autenticità e attendibilità.`,
+`Deepfake: contenuto sintetico che imita persone o elementi audiovisivi. Disinformazione: contenuti usati per orientare in modo ingannevole la comprensione dei fatti.`,
+`Un video apparentemente credibile di un dirigente non basta a giustificare una richiesta insolita: si devono verificare provenienza e contesto.`,
+`Qualità visiva e autenticità sono proprietà diverse; una fonte esistente può inoltre essere citata in modo non pertinente.`,
+`Fermarsi all’aspetto realistico; accettare un link perché ben formattato, senza aprirlo e confrontarne il contenuto.`,
+`Valuterei il contenuto insieme alla sua provenienza e al suo scopo. Verificherei fatti e riferimenti, perché l’IA può generare sia immagini credibili sia citazioni inesistenti.`
+);
+
+C(3, [13,14,15,17,43,44,45],
+"Bias, rappresentatività ed equità",
+`I dati riflettono scelte umane e disuguaglianze storiche. Un modello può riprodurle o amplificarle, soprattutto quando alcuni gruppi sono scarsamente rappresentati. La fonte chiama sottocampionamento la carenza di esempi per casi rari e collega decisioni ingiuste alla discriminazione digitale. Valutare l’equità significa confrontare punti di vista, linguaggio, stereotipi e risultati sui diversi gruppi, non limitarsi a una prestazione media.`,
+`Bias: distorsione sistematica. Rappresentatività: adeguata presenza dei casi rilevanti nei dati. Discriminazione digitale: trattamento ingiusto prodotto da decisioni automatizzate.`,
+`Il corso descrive un sistema addestrato soprattutto su immagini di un gruppo che rischia di non riconoscere correttamente persone di altri gruppi.`,
+`Un errore singolo non dimostra da solo discriminazione sistematica; l’equità richiede attenzione alla distribuzione degli errori e ai loro effetti.`,
+`Pensare che dati numerici siano neutrali; confondere accuratezza media elevata con equità per ogni gruppo.`,
+`Spiegherei il percorso dati sbilanciati, rappresentazione insufficiente, errori e possibili effetti discriminatori. La valutazione deve includere gruppi diversi e conseguenze concrete.`
+);
+
+C(3, [16,18,19],
+"Effetto ELIZA, fiducia e dipendenza",
+`L’effetto ELIZA è la tendenza ad attribuire qualità umane a sistemi conversazionali. Può portare a sovrastimare comprensione ed empatia. L’automation bias è l’eccessivo affidamento nei risultati automatizzati. Il caso degli AI companions mostra che il coinvolgimento può diventare emotivo e coinvolgere persone vulnerabili: la progettazione della relazione e dei contenuti assume quindi rilievo etico.`,
+`Antropomorfizzazione: attribuzione di qualità umane al sistema. Effetto ELIZA: percezione di comprensione umana nella conversazione automatizzata. Automation bias: fiducia eccessiva nell’automazione.`,
+`Un utente interpreta frasi empatiche come prova di sentimenti reali e smette di valutare criticamente i consigli ricevuti.`,
+`L’effetto ELIZA riguarda l’attribuzione di umanità; l’automation bias riguarda l’affidamento eccessivo. Possono alimentarsi reciprocamente.`,
+`Scambiare il linguaggio empatico per un sentimento; ritenere la conversazione fluida una prova di comprensione personale.`,
+`Distinguerei l’apparenza umana dalla fiducia automatica: un chatbot può sembrare empatico senza che questo provi esperienza o intenzioni. La formazione deve preservare giudizio critico e autonomia.`
+);
+
+C(3, [2,22,23,24,25,49],
+"Allucinazioni e revisione umana",
+`Gli output possono essere inaccurati per allucinazioni, dati obsoleti o irrilevanti e prompt inefficaci. Il corso richiede strumenti adeguati, istruzioni efficaci e revisione con fonti affidabili. La supervisione è continua: conoscere limiti, interpretare risultati e poter intervenire, modificare o disattivare. Una persona che si limita a confermare automaticamente non realizza il controllo sostanziale descritto.`,
+`Allucinazione: contenuto generato falso o non fondato. Human-in-the-loop: presenza umana nel processo con capacità di controllo e intervento.`,
+`Prima di usare un riassunto in un corso, la formatrice confronta le affermazioni con i documenti, corregge gli errori e scarta le parti non verificabili.`,
+`Migliorare il prompt può aiutare, ma non equivale a verificare il risultato. Approvazione formale e revisione effettiva sono diverse.`,
+`Credere che un prompt dettagliato elimini ogni errore; ridurre la supervisione alla firma di un output già deciso.`,
+`La supervisione richiede competenza e possibilità di agire. Verificherei fonti e contenuti, correggerei gli errori e interromperei il sistema se l’uso diventasse inadeguato.`
+);
+
+C(3, [29,30,31,32,33,34,35,36],
+"AI Act: rischio e ruoli nella filiera",
+`Le slide organizzano il rischio in inaccettabile, alto, limitato e minimo. Nel quadro didattico, all’inaccettabile corrispondono divieti, all’alto rischio requisiti rigorosi, al limitato obblighi di trasparenza. Provider, deployer e distributore hanno ruoli distinti. Le pagine contengono formulazioni normative sintetiche e una data di entrata in vigore da verificare: questa scheda espone il modello delle fonti. La pagina 29 richiama il diritto a non essere sottoposti a decisioni basate unicamente su trattamento automatizzato con effetti giuridici o analogamente significativi; pagina 30 sottolinea spiegazioni sul ruolo dell’IA. Sono estratti sintetici che non descrivono tutte le condizioni di applicazione. La fonte 1, pagine 10–11, collega l’AI Literacy a ruolo e contesto.`,
+`Provider: soggetto che sviluppa o fornisce nel linguaggio delle slide. Deployer: organizzazione che impiega il sistema. Tracciabilità: possibilità di ricostruire attività e risultati.`,
+`La fonte cita la selezione di CV e la valutazione degli esami tra gli esempi di impieghi ad alto rischio e richiama supervisione e qualità dei dati.`,
+`Un rischio alto non equivale al divieto: le slide lo collegano a requisiti rigorosi. La categoria di un impiego concreto richiede dettagli ulteriori.`,
+`Confondere alto rischio con rischio inaccettabile; considerare le formule sintetiche delle slide una classificazione legale completa.`,
+`Illustrerei la proporzione fra rischio e misure richieste, distinguendo i ruoli. Sottolineerei i requisiti di dati, documentazione, tracciabilità e controllo umano indicati per l’alto rischio.`
+);
+
+C(3, [2,24,25,37,38,39,49],
+"Etica, responsabilità e uso professionale",
+`L’uso responsabile comprende trasparenza, tutela della persona, rispetto della proprietà intellettuale, revisione dei contenuti e osservanza delle policy. Nelle organizzazioni il corso insiste su uso corretto, vigilanza attiva e segnalazione di anomalie. Per controllare un sistema occorrono anche formazione adeguata, referenti e condizioni organizzative che rendano possibile intervenire. Per valutare l’equità, il corso propone molteplici punti di vista, tono rispettoso, assenza di stereotipi e assunzioni ingiustificate e coerenza del linguaggio fra gruppi. Chiedere spiegazioni al modello deve accompagnarsi al confronto indipendente con fonti affidabili.`,
+`Trasparenza: rendere riconoscibile e comprensibile l’impiego dell’IA. Proprietà intellettuale: diritti sui contenuti e sulle opere. Vigilanza attiva: osservazione e segnalazione delle anomalie.`,
+`Una formatrice dichiara l’uso dell’IA per una bozza, controlla stereotipi e fonti e rispetta i diritti dei materiali impiegati.`,
+`Trasparenza non significa soltanto mostrare il nome di uno strumento; deve consentire di capire il suo ruolo. Delegare un compito non elimina il controllo.`,
+`Ritenere sufficiente dichiarare l’uso dell’IA per rendere lecito o corretto qualsiasi contenuto; ignorare le policy interne.`,
+`Collegherei responsabilità personale e condizioni organizzative. Uso corretto, vigilanza e rispetto delle persone richiedono formazione, verifiche e possibilità concreta di correggere gli output.`
+);
+
+C(3, [2,19,41,43,44,45,47,48,51,52,53,54],
+"Impatto sociale, competenze e fiducia",
+`Il percorso richiama trasformazioni del lavoro, necessità di riqualificazione, disuguaglianze, sorveglianza, dipendenza ed erosione della fiducia nei contenuti. La sottorappresentazione nei dati e nei ruoli di sviluppo può alimentare squilibri. I casi su scuola, adozione nei luoghi di lavoro e brevetti illustrano la diffusione dell’IA; numeri e confronti nazionali sono riportati nel loro contesto temporale e non sono aggiornati automaticamente.`,
+`Riqualificazione: sviluppo di competenze per ruoli che cambiano. Divario digitale: differenze nell’accesso e nelle competenze. Sorveglianza: osservazione sistematica dei comportamenti.`,
+`Un’organizzazione che automatizza attività ripetitive deve anche preparare le persone a verificare risultati, cambiare procedure e assumere nuovi compiti.`,
+`Adozione tecnologica e sviluppo di competenze sono processi collegati ma distinti. La diffusione di uno strumento non prova distribuzione equa dei benefici.`,
+`Ridurre l’impatto sociale al solo numero di posti sostituiti; ignorare fiducia, accesso e distribuzione delle opportunità.`,
+`Analizzerei benefici e rischi insieme: produttività e nuovi compiti, ma anche squilibri e dipendenza. La formazione continua aiuta a mantenere autonomia e capacità di giudizio.`
+);
+
+C(3, [2,55,56,57,58,59],
+"Energia, acqua e sostenibilità: il caso MIRA",
+`L’impatto ambientale dell’IA riguarda addestramento e utilizzo quotidiano, oltre a energia e acqua. Una richiesta può avere un consumo limitato, ma l’aggregazione di moltissime richieste conta. Il progetto MIRA collega analisi di malattie rare e infrastrutture di calcolo alimentate da una centrale idroelettrica di Udine. Il caso permette di collegare valore sociale, collaborazione interdisciplinare e scelte energetiche. L’acqua è richiamata anche per il raffreddamento dei data center: il ricorso a fonti rinnovabili non rende irrilevanti le altre risorse consumate.`,
+`Training: fase di addestramento. Inferenza: elaborazione durante l’uso del modello. HPC: High Performance Computing, calcolo ad alte prestazioni.`,
+`Un’infrastruttura HPC presso una centrale idroelettrica sostiene elaborazioni per malattie rare: la scelta energetica fa parte della progettazione del servizio.`,
+`L’addestramento prepara il modello; l’inferenza lo usa. Un singolo consumo ridotto non equivale a un impatto complessivo nullo.`,
+`Attribuire tutto l’impatto soltanto al training; universalizzare la stima di consumo per singola richiesta riportata nella slide.`,
+`Distinguerei training e inferenza e valuterei il consumo aggregato. Il caso MIRA mostra come utilità clinica, ricerca e scelte infrastrutturali possano essere considerate insieme.`
+);
+
+/* =========================================================
+   DOMANDE
+   Il primo testo passato a Q è quello corretto.
+   La funzione ne distribuisce la posizione tra A, B e C.
+   ========================================================= */
+
+function Q(prompt, correct, wrong, distractor, whyCorrect, whyWrong, whyDistractor) {
+  const index = DATA.questions.length;
+  const card = DATA.cards[index];
+  const position = index % 3;
+  const options = [wrong, distractor];
+  const why = [whyWrong, whyDistractor];
+  options.splice(position, 0, correct);
+  why.splice(position, 0, whyCorrect);
+  DATA.questions.push({
+    id: "q" + (index + 1),
+    card: card.id,
+    file: card.file,
+    pages: card.pages,
+    topic: card.title,
+    prompt,
+    options,
+    correct: position,
+    why
+  });
+}
+
+Q(
+"Quale attività dimostra meglio una formazione completa in AI Literacy?",
+"Far verificare una risposta generata, discutendone fonti, limiti e responsabilità.",
+"Insegnare soltanto a trovare il pulsante per generare un testo.",
+"Valutare l’affidabilità di una risposta soltanto dalla sua fluidità.",
+"Integra uso pratico e valutazione critica, come richiede il corso.",
+"La sola abilità operativa non copre le competenze critiche.",
+"La fluidità non dimostra correttezza o affidabilità."
+);
+
+Q(
+"Un programma eccelle soltanto nel riconoscimento di oggetti. Quale stadio descrive questa specializzazione?",
+"IA ristretta.",
+"Superintelligenza.",
+"IA generale, perché supera una persona in quel singolo compito.",
+"La specializzazione in un compito caratterizza l’IA ristretta.",
+"La fonte descrive la superintelligenza come uno scenario molto più ampio.",
+"Una singola prestazione elevata non implica capacità generali."
+);
+
+Q(
+"Dopo l’addestramento, quale elemento rappresenta ciò che è stato appreso e viene applicato a nuovi input?",
+"Il modello.",
+"Il solo elenco dei dati originari.",
+"L’algoritmo inteso come la stessa cosa del risultato appreso.",
+"Il modello è il risultato dell’apprendimento.",
+"I dati sono la materia prima e non il risultato appreso.",
+"La procedura e il risultato sono componenti distinte."
+);
+
+Q(
+"Si vogliono scoprire gruppi in dati privi di categorie preassegnate. Quale approccio corrisponde?",
+"Apprendimento non supervisionato.",
+"Apprendimento supervisionato con etichette già fornite.",
+"Apprendimento per rinforzo, perché ogni gruppo equivale a una ricompensa.",
+"Il non supervisionato cerca strutture senza etichette.",
+"La domanda esclude categorie preassegnate.",
+"Trovare gruppi non equivale a imparare azioni tramite ricompense."
+);
+
+Q(
+"Che cosa indica la metafora della black box nel Deep Learning?",
+"La difficoltà di comprendere il percorso interno che produce un risultato.",
+"L’assenza di qualunque dato in ingresso.",
+"La certezza che ogni risultato del modello sia errato.",
+"L’opacità riguarda il funzionamento interno.",
+"Si possono osservare input e output anche quando il processo è opaco.",
+"Difficoltà di interpretazione e correttezza non coincidono."
+);
+
+Q(
+"Quale distinzione tra contesto e parametri è coerente con il corso?",
+"Il contesto è l’informazione disponibile durante l’uso; i parametri sono valori appresi nell’addestramento.",
+"Contesto e parametri sono entrambi il numero di utenti collegati.",
+"Fornire un documento nel contesto equivale a modificarne stabilmente i parametri.",
+"Sono ruoli distinti descritti nella pagina 39 della fonte 1.",
+"Nessuno dei due termini indica il numero di utenti.",
+"Informazioni nel contesto e apprendimento stabile sono operazioni diverse."
+);
+
+Q(
+"Quale caratteristica rende un modello un foundation model nella spiegazione delle fonti?",
+"L’addestramento ampio e la possibilità di adattarlo a diversi compiti.",
+"La destinazione esclusiva a un unico dato di una sola persona.",
+"Il fatto di essere necessariamente identico all’interfaccia ChatGPT.",
+"Scala e adattabilità sono i tratti evidenziati.",
+"La fonte parla di grandi quantità di dati diversificati.",
+"Interfaccia e modello hanno ruoli diversi."
+);
+
+Q(
+"Quale attività illustra direttamente la multimodalità?",
+"Ricevere una fotografia e descriverla con un testo.",
+"Riscrivere una frase in un’altra frase senza altri input.",
+"Ripetere lo stesso testo in tre paragrafi più lunghi.",
+"Combina immagine e linguaggio scritto.",
+"La sola riscrittura testuale non mostra due modalità.",
+"La lunghezza o il numero di paragrafi non definisce la multimodalità."
+);
+
+Q(
+"Un modello rileva che due fenomeni compaiono spesso insieme. Che cosa si può concludere da questa sola osservazione?",
+"Esiste un’associazione nei dati, che da sola non prova una causa.",
+"Il primo fenomeno causa necessariamente il secondo.",
+"La correlazione rende superflua la verifica umana del risultato.",
+"Associazione e prova causale sono distinte.",
+"La sola co-occorrenza non stabilisce causalità.",
+"La correlazione non elimina i limiti del modello o la verifica."
+);
+
+Q(
+"Nel confronto adottato dal corso, quale caso rappresenta meglio l’IA agentica?",
+"Più agenti coordinano attività, scompongono un obiettivo e ripianificano il lavoro.",
+"Un archivio conserva file senza elaborarli.",
+"Un chatbot produce una singola frase e per questo costituisce già un team coordinato.",
+"Richiama coordinamento, pianificazione e adattamento delle pagine 76–79 della fonte 1.",
+"La conservazione di file non descrive azioni agentiche.",
+"La sola generazione di una frase non dimostra orchestrazione."
+);
+
+Q(
+"Quale coppia associa correttamente esempi e struttura dei dati?",
+"Tabella di importi: strutturati; registrazione vocale: non strutturati.",
+"Tabella di importi: non strutturati; registrazione vocale: strutturati.",
+"Tabella e registrazione sono strutturate soltanto perché salvate in file digitali.",
+"Il criterio è lo schema dei dati, non l’essere digitali.",
+"La coppia inverte gli esempi della fonte.",
+"Un formato digitale non implica uno schema tabellare."
+);
+
+Q(
+"Un assistente è molto capace ma opera contro gli obiettivi dell’organizzazione. Quale problema descrive il caso?",
+"Un problema di allineamento.",
+"La mancanza di un file audio.",
+"La certezza che più parametri garantiscano comportamenti appropriati.",
+"Le capacità tecniche non assicurano coerenza con finalità e valori.",
+"La modalità audio non è il punto del caso.",
+"Il numero di parametri non garantisce adeguatezza al contesto."
+);
+
+Q(
+"Un modello viene ulteriormente addestrato su esempi amministrativi per adattarne lo stile. Quale tecnica è descritta?",
+"Fine-tuning.",
+"Semplice consultazione di un documento durante una richiesta.",
+"RAG, perché ogni specializzazione consiste soltanto nel recuperare documenti.",
+"Gli esempi sono usati per un nuovo addestramento.",
+"La consultazione nel contesto non descrive riaddestramento.",
+"RAG e fine-tuning sono distinti proprio da questo criterio."
+);
+
+Q(
+"Serve rispondere su un regolamento aggiornabile senza riaddestrare il modello. Quale approccio descritto è pertinente?",
+"Recuperare i passaggi rilevanti e usarli nella generazione tramite RAG.",
+"Modificare i pesi con un nuovo addestramento a ogni singola domanda.",
+"Considerare il documento recuperato una prova automatica che ogni frase generata sia corretta.",
+"La consultazione senza riaddestramento è il tratto distintivo del RAG.",
+"Il caso richiede proprio di evitare nuovo addestramento.",
+"La fonte consultabile agevola la verifica ma non la sostituisce."
+);
+
+Q(
+"Quale affermazione sulla smart home rispetta la precisazione delle slide?",
+"Può comprendere dispositivi gestiti con algoritmi di IA e anche senza IA.",
+"Ogni interruttore comandato a distanza prova l’esistenza di una rete neurale.",
+"Ogni dispositivo connesso deve apprendere autonomamente dai dati.",
+"La pagina 17 della fonte 2 include esplicitamente IA e non IA.",
+"Il controllo remoto non dimostra una rete neurale.",
+"La connessione non implica apprendimento."
+);
+
+Q(
+"Per estrarre la scritta visibile su un cartello fotografato, quale tecnica è pertinente?",
+"OCR.",
+"Riconoscimento dell’identità del volto.",
+"Autenticazione biometrica, perché qualunque elemento della foto è un dato biometrico.",
+"L’OCR riconosce testo nelle immagini.",
+"L’identità di una persona non serve a leggere il cartello.",
+"Una scritta su un cartello non è per questo una caratteristica biometrica."
+);
+
+Q(
+"Un ente assegna automaticamente le PEC a categorie per inviarle agli uffici. Quale funzione descrive direttamente il compito?",
+"Classificazione e smistamento.",
+"Produzione di una nuova identità biometrica.",
+"Generazione creativa, perché ogni elaborazione di testo deve creare contenuti nuovi.",
+"È l’applicazione citata nella pagina 32 della fonte 2.",
+"Non si tratta di caratteristiche biometriche.",
+"Elaborare testo può significare classificarlo, senza creare nuovi contenuti."
+);
+
+Q(
+"Quale situazione illustra l’oncologia di precisione descritta?",
+"Integrare dati genomici, clinici e immagini per supportare raccomandazioni personalizzate.",
+"Applicare lo stesso protocollo a tutti ignorando le caratteristiche del tumore.",
+"Trasformare ogni raccomandazione del modello in una decisione clinica senza revisione.",
+"L’integrazione dei dati e la personalizzazione sono centrali nella pagina 40 della fonte 2.",
+"Ignorare la variabilità contrasta con la personalizzazione.",
+"Il supporto dell’IA non elimina il giudizio professionale."
+);
+
+Q(
+"Quale elemento distingue il digital twin descritto da una semplice immagine statica?",
+"L’aggiornamento tramite sensori e la possibilità di monitorare e simulare il sistema reale.",
+"La sola presenza di colori realistici.",
+"La generazione di un’immagine senza collegamento a dati del sistema fisico.",
+"La pagina 41 della fonte 2 evidenzia aggiornamento, monitoraggio e simulazione.",
+"L’aspetto grafico non è il criterio distintivo.",
+"L’assenza di collegamento ai dati esclude il tratto centrale descritto."
+);
+
+Q(
+"L’analisi delle pennellate di un dipinto per studiarne l’attribuzione è soprattutto quale uso?",
+"Analisi di caratteristiche di un’opera esistente.",
+"Creazione di un nuovo dipinto.",
+"Prova che ogni applicazione artistica dell’IA sia necessariamente generativa.",
+"Il caso cerca indizi sull’attribuzione di un’immagine già esistente.",
+"Il dipinto non viene creato dal modello.",
+"Il caso dimostra proprio un impiego analitico nell’arte."
+);
+
+Q(
+"Una docente vuole incollare in un chatbot esterno un verbale con dati identificabili. Quale scelta segue le buone pratiche del corso?",
+"Evitare di rivelare dati identificabili e seguire le policy dell’organizzazione.",
+"Incollare tutto, perché la compilazione volontaria annulla ogni rischio.",
+"Togliere soltanto il titolo e presumere che tutte le persone siano ormai anonime.",
+"La limitazione delle informazioni condivise e le policy sono indicate nel syllabus.",
+"Il consenso all’input non elimina i rischi della gestione successiva.",
+"Eliminare un titolo non elimina gli elementi identificativi."
+);
+
+Q(
+"Un attaccante telefona fingendosi un funzionario per ottenere credenziali. Quale tecnica descrive il canale della frode?",
+"Vishing.",
+"Tailgating.",
+"Un controllo biometrico affidabile, perché la voce somiglia a quella del funzionario.",
+"Il vishing usa il canale telefonico per la frode.",
+"Il tailgating riguarda l’accesso fisico seguendo altre persone.",
+"La voce può essere clonata e non dimostra da sola autenticità."
+);
+
+Q(
+"Un testo generato presenta un link dall’aspetto credibile. Quale verifica è necessaria?",
+"Controllare che la fonte esista e sostenga davvero l’affermazione.",
+"Accettarlo come prova perché contiene un indirizzo web.",
+"Valutarlo soltanto dal tono autorevole del testo che lo introduce.",
+"La pagina 23 della fonte 3 segnala anche link allucinati; la verifica riguarda esistenza e pertinenza.",
+"La forma di un URL non ne garantisce esistenza o validità.",
+"Il tono non dimostra attendibilità."
+);
+
+Q(
+"Un sistema ha prestazioni medie buone ma sbaglia spesso su un gruppo poco rappresentato. Quale problema evidenzia?",
+"Un rischio di bias e discriminazione legato alla rappresentatività dei dati.",
+"La prova che l’accuratezza media garantisce equità per tutti.",
+"L’impossibilità di qualunque errore, perché i dati sono numerici.",
+"La carenza di esempi può produrre errori distribuiti in modo ingiusto.",
+"La media può nascondere differenze fra gruppi.",
+"La rappresentazione numerica non rende neutrali i dati."
+);
+
+Q(
+"Una persona attribuisce sentimenti reali a un chatbot perché risponde con empatia. Quale concetto descrive direttamente questa attribuzione?",
+"Effetto ELIZA e antropomorfizzazione.",
+"Una misura della finestra di contesto.",
+"Una prova che la fluidità linguistica dimostri coscienza umana.",
+"Il concetto riguarda proprio l’attribuzione di qualità umane.",
+"Il contesto è un limite informativo del modello.",
+"Il corso invita a non dedurre qualità umane dalla conversazione."
+);
+
+Q(
+"Quale comportamento costituisce supervisione umana effettiva?",
+"Interpretare i risultati, verificarli e poterli modificare o bloccare.",
+"Approvare automaticamente ogni output per accelerare il flusso.",
+"Scrivere un prompt lungo e rinunciare a qualsiasi controllo successivo.",
+"Include competenza, verifica e facoltà di intervento della pagina 25 della fonte 3.",
+"L’approvazione automatica non esercita giudizio.",
+"Il prompt non garantisce correttezza."
+);
+
+Q(
+"Nel quadro didattico delle pagine 33–34 della fonte 3, che cosa distingue l’alto rischio dal rischio inaccettabile?",
+"L’alto rischio richiede requisiti rigorosi; l’inaccettabile è associato a pratiche proibite.",
+"Entrambi significano assenza di qualunque requisito.",
+"L’alto rischio indica sempre un divieto identico al rischio inaccettabile.",
+"È il confronto esplicito della piramide delle slide.",
+"La fonte collega queste categorie proprio a vincoli forti.",
+"Le slide distinguono regolamentazione rigorosa e proibizione."
+);
+
+Q(
+"Una formatrice dichiara di aver usato l’IA. Quale ulteriore pratica è richiesta dal percorso?",
+"Rivedere il contenuto, rispettare privacy, diritti sui materiali e policy.",
+"Considerare la dichiarazione sufficiente a evitare ogni controllo.",
+"Presumere che tutti i contenuti generati siano privi di vincoli di copyright.",
+"La trasparenza fa parte di più buone pratiche complementari.",
+"Dichiarare l’uso non verifica correttezza o diritti.",
+"Il syllabus chiede esplicitamente di rispettare proprietà intellettuale e copyright."
+);
+
+Q(
+"Quale piano affronta in modo coerente l’impatto dell’IA sul lavoro descritto nelle fonti?",
+"Affiancare l’adozione alla riqualificazione e alla valutazione di disuguaglianze e controllo umano.",
+"Acquistare strumenti e presumere che tutti possiedano già le competenze necessarie.",
+"Misurare soltanto il numero di account attivati come prova di equità dei benefici.",
+"Comprende competenze e conseguenze sociali, non solo installazione.",
+"L’adozione richiede formazione e cambiamento dei processi.",
+"Il numero di account non misura equità o autonomia."
+);
+
+Q(
+"Perché la sostenibilità va valutata anche durante l’inferenza?",
+"Molte interazioni quotidiane possono produrre un impatto aggregato significativo.",
+"L’inferenza coincide con la costruzione di tutti i dati di addestramento.",
+"Ogni singola richiesta consuma poco, quindi il totale è necessariamente nullo.",
+"La pagina 57 della fonte 3 evidenzia il peso cumulativo dell’uso.",
+"Inferenza e training sono fasi distinte.",
+"Un consumo piccolo moltiplicato per molte richieste può essere significativo."
+);
+
+/* Punti da chiarire nelle fonti */
+
+function N(file, pages, text) {
+  DATA.notes.push({file, pages, text});
+}
+
+N(1, [8,26],
+`Le capacità chiave sono elencate con varianti: ragionamento/presa di decisione. La dashboard mantiene la corrispondenza indicata negli schemi.`);
+
+N(1, [28,30],
+`Guida autonoma: le descrizioni del livello 4 non concordano sul ruolo del conducente. L’equivalenza fra livello 5 e IA forte non è giustificata dal quadro ANI/AGI di pagina 27. Questi dettagli non sono usati come risposte d’esame.`);
+
+N(1, [23,34,39,53,61,66],
+`Sono presenti affermazioni assolute o metaforiche: computer solo seriale, algoritmo che si autogenera, più parametri uguale più capacità, progressione verso AGI, istruzioni con cui non si può sbagliare, sistemi istintivi. Sono semplificazioni didattiche, non garanzie generali.`);
+
+N(1, [35,36,42,43,82],
+`Confronti tra modelli, percentuali di allucinazione, dimensioni, utenti, piani e disponibilità sono fotografie delle slide. La tabella di pagina 42 contiene anche valori incerti segnalati con punti interrogativi. Non sono proposti come dati attuali o garanzie universali.`);
+
+N(1, [37,45],
+`ChatGPT è chiamato sia LLM sia interfaccia. Si segue la distinzione esplicita di pagina 45 fra prodotto e modello. Gli esempi di versioni e nomi sono riportati dalle fonti, senza verifica dell’offerta attuale.`);
+
+N(1, [76,78,80,81],
+`La distinzione agente/IA agentica varia: alcune slide enfatizzano il team, altre l’autonomia di azione verso un obiettivo. I quiz sul confronto indicano espressamente la convenzione adottata dal corso.`);
+
+N(2, [4,7,8,24,39],
+`ML/DL su dati strutturati/non strutturati è una preferenza didattica; “permanente” nel fine-tuning e “solo” le fonti nel RAG sono formule semplificate. Il feedback non identifica da solo il tipo di apprendimento. A pagina 39 la sigla IoMT è espansa come “internet of media things” ma il contesto riguarda dispositivi medici: formulazione da chiarire.`);
+
+N(2, [42,43,44,45,48],
+`Le percentuali cliniche e di efficacia sono riportate con riferimenti sintetici; non è documentata nelle slide una base metodologica sufficiente per generalizzarle. Non sono oggetto di quiz mnemonici e non costituiscono indicazioni cliniche.`);
+
+N(3, [26,27,29,30,31,32,33,35,38,39],
+`Passaggi normativi da chiarire: pagina 31 associa al 13 marzo 2024 l’entrata in vigore; pagina 30 accorpa segnalazione e spiegazione sotto art. 86; gli obblighi e il passaggio a provider sono espressi in termini assoluti. La pagina 29 riporta solo una parte dell’art. 22 GDPR. La dashboard espone i principi del corso e non tratta queste sintesi come una ricostruzione legale completa o aggiornata.`);
+
+N(3, [28,42,45,47,48,51,52,53,57],
+`Numeri su welfare, organismi, adozione, brevetti, genere e consumi sono contestuali alle fonti; periodi, basi di confronto e stime non sempre coincidono. Per esempio il tempo di diagnosi delle malattie rare varia fra fonte 2 pagina 44 e fonte 3 pagina 58: non è presentato come un unico valore universale.`);
+
+N(1, [7,8,9,87],
+`Il materiale include syllabus e recap grafici. I riferimenti della dashboard usano sempre la posizione della pagina nel PDF (1–88, 1–50, 1–62), perché i numeri stampati nelle slide possono differire.`);
+
+N(3, [7,34,38],
+`Sono presenti sovrapposizioni di testo nell’originale, particolarmente alle pagine 7, 34 e 38. Le proposizioni principali sono recuperabili nel testo estratto e nel contesto, ma alcuni dettagli grafici e righe sovrapposte non sono pienamente leggibili. Non fondano domande specifiche.`);
+
+/* =========================================================
+   INTERFACCIA E SALVATAGGIO
+   ========================================================= */
+
+const app = document.querySelector("#app");
+const KEY = "ai-literacy-inline-v1";
+const empty = () => ({read: [], session: null, history: []});
+const getQ = id => DATA.questions.find(q => q.id === id);
+const getC = id => DATA.cards.find(c => c.id === id);
+
+let state = empty();
+
+try {
+  const saved = JSON.parse(localStorage.getItem(KEY));
+  if (
+    saved &&
+    Array.isArray(saved.read) &&
+    Array.isArray(saved.history) &&
+    (
+      !saved.session ||
+      (
+        Array.isArray(saved.session.order) &&
+        saved.session.order.length > 0 &&
+        saved.session.order.every(id => Boolean(getQ(id))) &&
+        saved.session.answers &&
+        Number.isInteger(saved.session.index) &&
+        saved.session.index >= 0 &&
+        saved.session.index < saved.session.order.length
+      )
+    )
+  ) {
+    state = saved;
+  }
+} catch (e) {
+  state = empty();
+}
+
+function save() {
+  const status = document.querySelector("#saveStatus");
+  try {
+    localStorage.setItem(KEY, JSON.stringify(state));
+    status.textContent = "Progressi salvati su questo dispositivo.";
+  } catch (e) {
+    status.textContent =
+      "Salvataggio locale non disponibile: mantieni aperta questa pagina.";
+  }
+}
+
+function esc(value) {
+  return String(value).replace(/[&<>"']/g, c => ({
+    "&": "&amp;",
+    "<": "&lt;",
+    ">": "&gt;",
+    '"': "&quot;",
+    "'": "&#39;"
+  }[c]));
+}
+
+function refs(item) {
+  return `
+    <span class="source">
+      Fonte ${item.file} · ${item.file}_AI_Literacy.pdf ·
+      pagine PDF ${item.pages.join(", ")}
+    </span><br>
+    <a class="source" href="#fonte/${item.file}/${item.pages[0]}">
+      Apri la pagina originale
+    </a>`;
+}
+
+function shuffle(items) {
+  const result = [...items];
+  for (let i = result.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [result[i], result[j]] = [result[j], result[i]];
+  }
+  return result;
+}
+
+const answered = s => s ? Object.keys(s.answers).length : 0;
+
+function score(s) {
+  if (!s) return 0;
+  return Object.entries(s.answers).filter(
+    ([id, answer]) => getQ(id) && getQ(id).correct === answer
+  ).length;
+}
+
+function start(ids = DATA.questions.map(q => q.id), mode = "intera") {
+  state.session = {
+    order: shuffle(ids),
+    index: 0,
+    selected: null,
+    answers: {},
+    finished: false,
+    mode,
+    started: new Date().toISOString()
+  };
+  save();
+  location.hash = "simulazione";
+  render();
+}
+
+function finish() {
+  const s = state.session;
+  s.finished = true;
+  s.ended = new Date().toISOString();
+  state.history.push(JSON.parse(JSON.stringify(s)));
+  state.history = state.history.slice(-20);
+  save();
+  location.hash = "risultati";
+}
+
+function study() {
+  app.innerHTML = `
+    <section class="hero">
+      <div class="eyebrow">Preparazione all’esame · AICA</div>
+      <h1>Comprendi l’IA.<br>Impara a spiegarla.</h1>
+      <p class="lead">
+        Un percorso dai fondamenti alle applicazioni, fino a rischi
+        e responsabilità. Studia i concetti, mettili alla prova
+        e ripassa ciò che serve.
+      </p>
+      <div class="stats">
+        <div class="stat"><strong>30</strong>schede di studio</div>
+        <div class="stat"><strong>30</strong>domande ragionate</div>
+        <div class="stat">
+          <strong>${state.read.length} / 30</strong>
+          schede segnate come studiate
+        </div>
+      </div>
+      <div class="actions">
+        <a class="button" href="#simulazione">
+          ${state.session && !state.session.finished
+            ? "Riprendi la simulazione"
+            : "Vai alla simulazione"}
+        </a>
+        <a class="button quiet" href="#fonti">Fonti e punti da chiarire</a>
+      </div>
+    </section>
+
+    <label for="search">Cerca nel percorso</label>
+    <div class="toolbar">
+      <input id="search" type="search"
+        placeholder="Es. RAG, bias, reti neurali…">
+      <select id="filter" aria-label="Filtra per fonte">
+        <option value="">Tutte le fonti</option>
+        <option value="1">1 · Fondamenti</option>
+        <option value="2">2 · Applicazioni</option>
+        <option value="3">3 · Rischi e responsabilità</option>
+      </select>
+      <select id="readFilter" aria-label="Filtra per stato di studio">
+        <option value="">Tutte le schede</option>
+        <option value="todo">Da studiare</option>
+        <option value="done">Studiate</option>
+      </select>
+    </div>
+    <p id="count" class="muted" role="status"></p>
+    <section id="cards" class="grid" aria-label="Schede teoriche"></section>
+  `;
+
+  function draw() {
+    const text = document.querySelector("#search").value
+      .toLocaleLowerCase("it");
+    const file = document.querySelector("#filter").value;
+    const readFilter = document.querySelector("#readFilter").value;
+
+    const cards = DATA.cards.filter(c =>
+      (!file || c.file === Number(file)) &&
+      JSON.stringify(c).toLocaleLowerCase("it").includes(text) &&
+      (
+        !readFilter ||
+        (readFilter === "done") === state.read.includes(c.id)
+      )
+    );
+
+    document.querySelector("#count").textContent =
+      cards.length + " schede disponibili";
+
+    document.querySelector("#cards").innerHTML = cards.map(c => `
+      <article class="card">
+        <span class="tag">
+          ${["", "Fondamenti", "Applicazioni", "Rischi e responsabilità"][c.file]}
+        </span>
+        <h3>${esc(c.title)}</h3>
+        <p>${esc(c.explain.split(". ")[0])}.</p>
+        <p class="source">
+          Fonte ${c.file} · pp. ${c.pages.join(", ")}
+          ${state.read.includes(c.id) ? "<br>✓ Studiata" : ""}
+        </p>
+        <a href="#scheda/${c.id}">Studia il concetto →</a>
+      </article>
+    `).join("") || "<p>Nessuna scheda corrisponde alla ricerca.</p>";
+  }
+
+  ["search", "filter", "readFilter"].forEach(id => {
+    document.getElementById(id).addEventListener(
+      id === "search" ? "input" : "change", draw
+    );
+  });
+
+  draw();
+}
+
+function comparison(id) {
+  const tuning = [
+    ["Tecnica", "Che cosa fa", "Quando interviene"],
+    ["Fine-tuning", "Adatta il modello con esempi mirati",
+      "Durante un ulteriore addestramento"],
+    ["RAG", "Recupera documenti pertinenti",
+      "Durante la preparazione della risposta"]
+  ];
+
+  const tables = {
+    c4: [
+      ["Approccio", "Segnale disponibile", "Obiettivo"],
+      ["Supervisionato", "Esempi etichettati",
+        "Associare input e risultati attesi"],
+      ["Non supervisionato", "Dati senza etichette",
+        "Scoprire strutture e gruppi"],
+      ["Per rinforzo", "Ricompense e penalità",
+        "Apprendere azioni nell’ambiente"]
+    ],
+    c13: tuning,
+    c14: tuning,
+    c8: [
+      ["Compito", "Esempio", "Risultato"],
+      ["Analitico", "Riconoscere un gatto in una foto",
+        "Categoria o previsione"],
+      ["Generativo", "Creare una nuova immagine di un gatto",
+        "Nuovo contenuto"]
+    ],
+    c25: [
+      ["Concetto", "Meccanismo", "Rischio"],
+      ["Effetto ELIZA", "Attribuire qualità umane alla conversazione",
+        "Sovrastimare comprensione ed empatia"],
+      ["Automation bias", "Affidarsi eccessivamente all’automazione",
+        "Delegare il giudizio senza verifica"]
+    ]
+  };
+
+  const table = tables[id];
+  if (!table) return "";
+
+  return `
+    <section class="panel">
+      <h2>Confronto da ricordare</h2>
+      <table>
+        <thead><tr>
+          ${table[0].map(v => `<th scope="col">${esc(v)}</th>`).join("")}
+        </tr></thead>
+        <tbody>
+          ${table.slice(1).map(row => `
+            <tr>${row.map(v => `<td>${esc(v)}</td>`).join("")}</tr>
+          `).join("")}
+        </tbody>
+      </table>
+    </section>`;
+}
+
+function card(id) {
+  const c = getC(id);
+  if (!c) {
+    location.hash = "studia";
+    return;
+  }
+
+  const index = DATA.cards.indexOf(c);
+
+  app.innerHTML = `
+    <article class="sheet">
+      <a href="#studia">← Tutte le schede</a>
+      <p class="eyebrow">Scheda ${index + 1} di 30 · Fonte ${c.file}</p>
+      <h1>${esc(c.title)}</h1>
+      ${refs(c)}
+
+      <section class="panel">
+        <h2>Il concetto</h2>
+        <p>${esc(c.explain)}</p>
+        <h3>Termini da conoscere</h3>
+        <p>${esc(c.terms)}</p>
+      </section>
+
+      <section class="panel">
+        <h2>Un esempio concreto</h2>
+        <p>${esc(c.example)}</p>
+        <h3>Da distinguere</h3>
+        <p>${esc(c.diff)}</p>
+        <h3>Errori frequenti</h3>
+        <p>${esc(c.error)}</p>
+      </section>
+
+      ${comparison(id)}
+
+      <section class="panel model">
+        <h2>Come lo spiegheresti all’esame?</h2>
+        <p>${esc(c.model)}</p>
+        <p class="source">
+          Risposta modello rielaborata per lo studio.
+          L’esempio è una situazione didattica coerente con
+          i concetti della fonte.
+        </p>
+      </section>
+
+      <button id="mark">
+        ${state.read.includes(id)
+          ? "✓ Studiata · Segna da ripassare"
+          : "Segna come studiata"}
+      </button>
+
+      <div class="actions">
+        ${index > 0 ? `
+          <a class="button quiet"
+             href="#scheda/${DATA.cards[index - 1].id}">
+            ← Scheda precedente
+          </a>` : ""}
+        ${index < DATA.cards.length - 1 ? `
+          <a class="button"
+             href="#scheda/${DATA.cards[index + 1].id}">
+            Scheda successiva →
+          </a>` : ""}
+        <a class="button quiet" href="#simulazione">
+          ${state.session && !state.session.finished
+            ? "Torna alla domanda in corso"
+            : "Vai alla simulazione"}
+        </a>
+      </div>
+
+      <details>
+        <summary>Confronta direttamente con la fonte</summary>
+        <p>${refs(c)}</p>
+      </details>
+    </article>
+  `;
+
+  document.querySelector("#mark").onclick = () => {
+    state.read = state.read.includes(id)
+      ? state.read.filter(value => value !== id)
+      : [...state.read, id];
+    save();
+    card(id);
+  };
+}
+
+function quiz() {
+  const s = state.session;
+
+  if (!s || s.finished) {
+    app.innerHTML = `
+      <div class="quiz">
+        <div class="eyebrow">Simulazione d’esame</div>
+        <h1>Metti alla prova la comprensione.</h1>
+        <p class="lead">
+          30 domande, 10 per ogni fonte. Definizioni, confronti
+          e casi applicativi, con una sola risposta corretta
+          per domanda.
+        </p>
+        <section class="panel">
+          <h2>Come funziona</h2>
+          <p>
+            Scegli A, B o C e premi <strong>Conferma</strong>.
+            Vedrai la correzione e le tre spiegazioni solo dopo
+            aver confermato. La risposta sarà bloccata;
+            premi <strong>Avanti</strong> per continuare.
+          </p>
+          <p>
+            Ogni risposta corretta vale 1 punto. Non sono previste
+            penalità, limite di tempo o soglia ufficiale di
+            superamento. Puoi interrompere e riprendere
+            da questo browser.
+          </p>
+          <button id="start">Inizia · 30 domande casuali</button>
+        </section>
+        ${s ? '<a href="#risultati">Consulta l’ultima simulazione</a>' : ""}
+      </div>
+    `;
+
+    document.querySelector("#start").onclick = () => start();
+    return;
+  }
+
+  const q = getQ(s.order[s.index]);
+  const locked = Object.hasOwn(s.answers, q.id);
+  const selected = locked ? s.answers[q.id] : s.selected;
+
+  app.innerHTML = `
+    <section class="quiz">
+      <div class="eyebrow">
+        Simulazione ${s.mode === "errori" ? "· Ripasso degli errori" : ""}
+      </div>
+
+      <div class="row">
+        <p>Domanda <strong>${s.index + 1} / ${s.order.length}</strong></p>
+        <p>
+          Punteggio <strong>${score(s)} / ${answered(s)}</strong>
+          risposte confermate
+        </p>
+      </div>
+
+      <progress aria-label="Domande confermate"
+        value="${answered(s)}" max="${s.order.length}"></progress>
+
+      <p class="source">
+        Argomento: ${esc(q.topic)} · Fonte ${q.file}
+      </p>
+
+      <h2 id="question">${esc(q.prompt)}</h2>
+
+      <form id="answer" aria-labelledby="question">
+        ${q.options.map((option, index) => `
+          <label class="option">
+            <input type="radio" name="choice" value="${index}"
+              ${selected === index ? "checked" : ""}
+              ${locked ? "disabled" : ""}>
+            <strong>${"ABC"[index]}</strong>
+            <span>${esc(option)}</span>
+          </label>
+        `).join("")}
+
+        <div class="actions">
+          <button id="confirm" type="submit"
+            ${locked || selected === null ? "disabled" : ""}>
+            ${locked ? "Risposta confermata" : "Conferma"}
+          </button>
+        </div>
+      </form>
+
+      <div id="feedback" aria-live="polite"></div>
+    </section>
+  `;
+
+  document.querySelectorAll('input[name="choice"]').forEach(input => {
+    input.onchange = () => {
+      if (locked) return;
+      s.selected = Number(input.value);
+      save();
+      document.querySelector("#confirm").disabled = false;
+    };
+  });
+
+  document.querySelector("#answer").onsubmit = event => {
+    event.preventDefault();
+    if (
+      Object.hasOwn(s.answers, q.id) ||
+      s.selected === null
+    ) return;
+
+    s.answers[q.id] = s.selected;
+    save();
+    quiz();
+    document.querySelector("#feedback")
+      .scrollIntoView({block: "nearest"});
+  };
+
+  if (locked) {
+    const ok = selected === q.correct;
+
+    document.querySelector("#feedback").innerHTML = `
+      <section class="panel feedback ${ok ? "" : "wrong"}">
+        <h3>${ok ? "✓ Risposta corretta" : "✕ Risposta errata"}</h3>
+        <p>
+          Hai scelto <strong>${"ABC"[selected]}</strong>.
+          Soluzione:
+          <strong>
+            ${"ABC"[q.correct]} · ${esc(q.options[q.correct])}
+          </strong>
+        </p>
+
+        <ul>
+          ${q.options.map((option, index) => `
+            <li>
+              <strong>
+                ${"ABC"[index]} ·
+                ${index === q.correct ? "Corretta" : "Errata"}:
+              </strong>
+              ${esc(q.why[index])}
+            </li>
+          `).join("")}
+        </ul>
+
+        <p>${refs(q)}</p>
+        <a href="#scheda/${q.card}">
+          Ripassa la scheda: ${esc(q.topic)}
+        </a>
+      </section>
+
+      <button id="next">
+        ${s.index === s.order.length - 1
+          ? "Avanti · Visualizza risultati"
+          : "Avanti →"}
+      </button>
+    `;
+
+    document.querySelector("#next").onclick = () => {
+      if (s.index === s.order.length - 1) {
+        finish();
+        return;
+      }
+      s.index++;
+      s.selected = null;
+      save();
+      quiz();
+      window.scrollTo(0, 0);
+    };
+  }
+}
+
+function results() {
+  const s = state.session;
+
+  if (!s) {
+    app.innerHTML = `
+      <h1>I tuoi risultati</h1>
+      <p>
+        Completa una simulazione per individuare i concetti
+        da ripassare.
+      </p>
+      <a class="button" href="#simulazione">Inizia una simulazione</a>
+    `;
+    return;
+  }
+
+  const n = answered(s);
+  const good = score(s);
+  const wrong = Object.keys(s.answers)
+    .filter(id => s.answers[id] !== getQ(id).correct);
+  const percentage = n ? Math.round(good / n * 100) : 0;
+  const topics = [...new Set(s.order.map(id => getQ(id).topic))];
+
+  const bySource = [1,2,3].map(file => {
+    const questions = s.order.map(getQ).filter(q => q.file === file);
+    const confirmed = questions.filter(q => Object.hasOwn(s.answers, q.id));
+    const correct = confirmed.filter(
+      q => s.answers[q.id] === q.correct
+    ).length;
+
+    return `
+      <tr>
+        <td>
+          ${file} ·
+          ${["", "Fondamenti", "Applicazioni", "Rischi e responsabilità"][file]}
+        </td>
+        <td>${correct} / ${confirmed.length}</td>
+        <td>${questions.length - confirmed.length}</td>
+      </tr>`;
+  }).join("");
+
+  const byTopic = topics.map(topic => {
+    const questions = s.order.map(getQ).filter(q => q.topic === topic);
+    const confirmed = questions.filter(q => Object.hasOwn(s.answers, q.id));
+    const correct = confirmed.filter(
+      q => s.answers[q.id] === q.correct
+    ).length;
+
+    return `
+      <tr>
+        <td>
+          <a href="#scheda/${questions[0].card}">${esc(topic)}</a>
+        </td>
+        <td>${correct} / ${confirmed.length} confermate</td>
+      </tr>`;
+  }).join("");
+
+  const mistakes = wrong.map(id => {
+    const q = getQ(id);
+    return `
+      <article class="panel">
+        <h3>${esc(q.topic)}</h3>
+        <p>${esc(q.prompt)}</p>
+
+        <p>
+          <strong>La tua risposta ${"ABC"[s.answers[id]]}:</strong>
+          ${esc(q.options[s.answers[id]])}
+        </p>
+        <p>
+          <strong>Soluzione ${"ABC"[q.correct]}:</strong>
+          ${esc(q.options[q.correct])}
+        </p>
+
+        <p>${esc(q.why[q.correct])}</p>
+        <details>
+          <summary>Perché le altre risposte sono errate</summary>
+          ${q.why.map((why, index) => index !== q.correct ? `
+            <p><strong>${"ABC"[index]}:</strong> ${esc(why)}</p>
+          ` : "").join("")}
+        </details>
+
+        <p>${refs(q)}</p>
+        <a href="#scheda/${q.card}">Ripassa il concetto →</a>
+      </article>`;
+  }).join("");
+
+  app.innerHTML = `
+    <div class="eyebrow">
+      ${s.finished ? "Simulazione completata" : "Risultati provvisori"}
+    </div>
+
+    <h1>
+      ${s.finished
+        ? "Il punto sul tuo percorso."
+        : "La simulazione è ancora in corso."}
+    </h1>
+
+    <div class="stats">
+      <div class="stat">
+        <strong>${good} / ${s.order.length}</strong>
+        punteggio ${s.finished ? "finale" : "attuale"}
+      </div>
+      <div class="stat">
+        <strong>${percentage}%</strong>
+        corrette sulle ${n} confermate
+      </div>
+      <div class="stat">
+        <strong>${wrong.length}</strong>errori da rivedere
+      </div>
+    </div>
+
+    <p>
+      ${s.finished
+        ? "Il risultato descrive questa esercitazione; non è un esito ufficiale dell’esame AICA."
+        : "Le domande non ancora confermate non sono incluse nella percentuale."}
+    </p>
+
+    <div class="actions">
+      ${!s.finished ? `
+        <a class="button" href="#simulazione">
+          Riprendi dalla domanda in corso
+        </a>
+      ` : `
+        <button id="retry" ${wrong.length ? "" : "disabled"}>
+          Ripeti solo gli errori (${wrong.length})
+        </button>
+        <button class="quiet" id="restart">
+          Ricomincia tutte · Ordine casuale
+        </button>
+      `}
+    </div>
+
+    <h2>Risultati per fonte</h2>
+    <table>
+      <thead><tr>
+        <th scope="col">Fonte</th>
+        <th scope="col">Corrette / confermate</th>
+        <th scope="col">Da rispondere</th>
+      </tr></thead>
+      <tbody>${bySource}</tbody>
+    </table>
+
+    <h2>Risultati per argomento</h2>
+    <table>
+      <thead><tr>
+        <th scope="col">Argomento</th>
+        <th scope="col">Esito</th>
+      </tr></thead>
+      <tbody>${byTopic}</tbody>
+    </table>
+
+    <h2>Errori e concetti da ripassare</h2>
+    ${mistakes || `
+      <p>
+        ${n
+          ? "Nessun errore nelle risposte confermate."
+          : "Non ci sono ancora risposte confermate."}
+      </p>
+    `}
+
+    <details>
+      <summary>
+        Storico delle simulazioni (${state.history.length})
+      </summary>
+      <p>Si conservano le ultime 20 simulazioni completate.</p>
+      ${state.history.slice().reverse().map(h => `
+        <p>
+          ${esc(new Date(h.ended).toLocaleString("it-IT"))} ·
+          ${h.mode === "errori" ? "Ripasso errori" : "Intera"} ·
+          ${score(h)} / ${h.order.length}
+        </p>
+      `).join("")}
+    </details>
+  `;
+
+  if (s.finished) {
+    document.querySelector("#retry").onclick = () => {
+      if (wrong.length) start(wrong, "errori");
+    };
+    document.querySelector("#restart").onclick = () => start();
+  }
+}
+
+function sources() {
+  app.innerHTML = `
+    <a href="#studia">← Torna al percorso</a>
+    <h1>Fonti e lettura critica</h1>
+    <p class="lead">
+      Tre documenti, 200 pagine. Ogni scheda e domanda indica
+      la fonte e le pagine PDF: la numerazione stampata
+      sulle slide può differire.
+    </p>
+
+    <div class="grid">
+      ${DATA.sources.map(source => `
+        <article class="card">
+          <span class="tag">Fonte ${source.file}</span>
+          <h3>${esc(source.name)}</h3>
+          <p>${source.pages} pagine</p>
+          <a href="#fonte/${source.file}/1">Consulta il documento</a>
+          <a href="${source.name}" target="_blank" rel="noopener">
+            Apri il PDF in una nuova scheda
+          </a>
+        </article>
+      `).join("")}
+    </div>
+
+    <section class="warning">
+      <h2>Come sono stati selezionati i contenuti</h2>
+      <p>
+        Le spiegazioni e le domande sono rielaborazioni didattiche
+        delle fonti. Gli esempi applicativi sono situazioni
+        costruite per illustrare quei concetti.
+      </p>
+      <p>
+        Le domande evitano percentuali contestuali, classifiche
+        di prodotti e passaggi discordanti. I contenuti normativi
+        sono presentati come quadro del corso: le slide non offrono
+        sempre tutte le condizioni ed eccezioni necessarie
+        a valutare un caso reale.
+      </p>
+      <p>
+        Le immagini illustrative generate dall’IA non sono prove
+        dei fatti rappresentati. I collegamenti esterni presenti
+        nelle slide non sono stati verificati né usati
+        come fonti aggiuntive.
+      </p>
+    </section>
+
+    <h2>Punti ambigui e limiti delle fonti</h2>
+
+    ${DATA.notes.map(note => `
+      <article class="panel">
+        <p>${esc(note.text)}</p>
+        ${refs(note)}
+      </article>
+    `).join("")}
+
+    <section class="panel">
+      <h2>Aprire i PDF</h2>
+      <p>
+        Questa versione del codice non incorpora i documenti.
+        Conserva i tre PDF nella stessa cartella del file HTML,
+        con i nomi indicati sopra. Schede e simulazione
+        funzionano anche senza i PDF.
+      </p>
+
+      <h2>Conservazione dei progressi</h2>
+      <p>
+        Schede studiate, domanda in corso, risposte confermate
+        e ultimi risultati sono salvati nel browser di questo
+        dispositivo. Non si sincronizzano fra computer e telefono.
+        La cancellazione dei dati del browser può rimuoverli.
+        “Azzera dati” elimina soltanto i progressi
+        di questa dashboard.
+      </p>
+    </section>
+  `;
+}
+
+function source(file, page) {
+  const f = Number(file);
+  if (![1,2,3].includes(f)) {
+    location.hash = "fonti";
+    return;
+  }
+
+  const p = Math.min(
+    Math.max(Number(page) || 1, 1),
+    DATA.sources[f - 1].pages
+  );
+
+  const url = `${f}_AI_Literacy.pdf#page=${p}`;
+
+  app.innerHTML = `
+    <a href="#fonti">← Fonti e note</a>
+    <h1>Fonte ${f} · Pagina PDF ${p}</h1>
+
+    <div class="actions">
+      <a class="button" href="${url}" target="_blank" rel="noopener">
+        Apri il PDF alla pagina ${p}
+      </a>
+      <button class="quiet" id="back">
+        Torna alla schermata precedente
+      </button>
+    </div>
+
+    <p class="source">
+      Il PDF deve trovarsi nella stessa cartella del file HTML.
+      Se il browser mobile non mostra l’anteprima o ignora
+      il numero di pagina, apri il PDF con il collegamento sopra
+      e seleziona la pagina indicata.
+    </p>
+
+    <iframe title="Fonte ${f}, pagina ${p}" src="${url}"></iframe>
+  `;
+
+  document.querySelector("#back").onclick = () => history.back();
+}
+
+function render() {
+  const [route, id, page] = (
+    location.hash.slice(1) || "studia"
+  ).split("/");
+
+  const section = ["scheda", "fonti", "fonte"].includes(route)
+    ? "studia"
+    : route;
+
+  document.querySelectorAll("nav a").forEach(link => {
+    const active = link.hash === "#" + section;
+    link.classList.toggle("active", active);
+    if (active) link.setAttribute("aria-current", "page");
+    else link.removeAttribute("aria-current");
+  });
+
+  if (route === "scheda") card(id);
+  else if (route === "simulazione") quiz();
+  else if (route === "risultati") results();
+  else if (route === "fonti") sources();
+  else if (route === "fonte") source(id, page);
+  else study();
+
+  save();
+}
+
+window.addEventListener("hashchange", () => {
+  render();
+  window.scrollTo(0, 0);
+});
+
+document.querySelector("#reset").onclick = () => {
+  if (confirm(
+    "Vuoi eliminare schede studiate, simulazione e risultati salvati in questo browser?"
+  )) {
+    state = empty();
+    save();
+    render();
+  }
+};
+
+/* Controlli strutturali dei contenuti caricati */
+if (
+  DATA.cards.length !== 30 ||
+  DATA.questions.length !== 30 ||
+  ![1,2,3].every(
+    f => DATA.questions.filter(q => q.file === f).length === 10
+  ) ||
+  ![0,1,2].every(
+    p => DATA.questions.filter(q => q.correct === p).length === 10
+  )
+) {
+  throw new Error("La struttura dei contenuti non è valida.");
+}
+
+render();
+</script>
+</body>
+</html>
+
+  
+18:52
